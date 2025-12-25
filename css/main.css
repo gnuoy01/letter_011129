@@ -1,105 +1,126 @@
-/* 1. 전체 화면 중앙 정렬 */
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-size: 14px;
   margin: 0;
   padding: 0;
-  min-height: 100vh;
+  font-size: 14px;
+  background-color: #f0f2f5; /* PC 배경색 */
+  
+  /* 화면 중앙 정렬 */
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f5f5f5; /* 배경색 */
+  min-height: 100vh;
 }
 
-/* 2. 스마트폰 프레임 (360x780) */
-.v2_7 {
-  width: 360px;
-  height: 780px;
-  background: #fff;
+/* 메인 컨테이너 */
+.v8_76 {
+  width: 100%;
+  max-width: 430px; /* PC에서는 최대 아이폰 크기 */
+  height: 100vh;    /* 모바일에서는 전체 높이 사용 */
+  background: #FFFFFF;
   position: relative;
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  
+  /* 내용물 중앙 정렬 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-/* 3. 배경 이미지: 강제로 중앙에 맞춤 */
-.v2_8 {
-  width: 557px; /* 컨테이너보다 큼 */
-  height: 818px;
-  background: url("../images/v2_8.png") no-repeat center center / cover;
+/* 배경 텍스처 */
+.v8_77 {
   position: absolute;
   top: 0;
-  /* 핵심: 왼쪽 여백을 없애고 정중앙 배치 */
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* 이미지 경로가 맞는지 꼭 확인하세요! */
+  background: url("../images/v8_77.png") center/cover no-repeat;
+  opacity: 0.6;
   z-index: 0;
 }
 
-/* 4. 상단 아이콘 */
-.v2_24 {
-  width: 143px;
-  height: 16px;
-  background: url("../images/v2_24.png") no-repeat center center / contain;
+/* 왼쪽 상단 꽃 */
+.v8_83 {
   position: absolute;
-  top: 79px;
-  /* 가로 중앙 정렬 */
-  left: 0; 
-  right: 0; 
-  margin: 0 auto;
+  top: -20px;
+  left: -20px;
+  width: 220px;
+  height: 250px;
+  background: url("../images/v8_83.png") no-repeat;
+  background-size: contain;
   z-index: 1;
 }
 
-/* 5. 텍스트 요소들: 좌표 대신 너비 100% 주고 가운데 정렬 */
-.v2_19 {
-  width: 100%; /* 전체 너비 사용 */
-  color: rgba(226,221,220,1);
-  font-family: Margarine, sans-serif;
-  font-size: 36px;
-  text-align: center; /* 텍스트 중앙 정렬 */
+/* 오른쪽 하단 꽃 */
+.v8_84 {
   position: absolute;
-  top: 155px;
-  left: 0;
-  z-index: 2;
-}
-
-.v2_21 {
-  width: 100%;
-  color: rgba(90,88,89,1);
-  font-family: Battambang, sans-serif;
-  font-size: 48px;
-  text-align: center;
-  position: absolute;
-  top: 214px;
-  left: 0;
-  z-index: 2;
-  /* 글자가 겹치지 않게 줄 높이 확보 */
-  line-height: 1.2; 
-}
-
-.v2_26 {
-  width: 100%;
-  color: rgba(133,132,130,1);
-  font-family: Roboto, sans-serif;
-  font-size: 13px;
-  text-align: center;
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  position: absolute;
-  /* 겹침 방지를 위해 top을 살짝 내림 (262px -> 280px) */
-  top: 280px; 
-  left: 0;
-  z-index: 2;
-}
-
-/* 6. 하단 편지봉투 */
-.v2_9 {
-  width: 307px;
-  height: 186px;
-  background: url("../images/v2_9.png") no-repeat center center / cover;
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
-  position: absolute;
-  top: 527px;
-  /* 가로 중앙 정렬 */
-  left: 0; 
+  bottom: 0;
   right: 0; 
-  margin: 0 auto;
-  z-index: 2;
+  width: 100%;
+  height: auto;
+  min-height: 300px; /* 최소 높이 확보 */
+  background: url("../images/v8_84.png") no-repeat right bottom;
+  background-size: contain; 
+  z-index: 1;
+  pointer-events: none; /* 클릭 방해 금지 */
+}
+
+/* 'Login' 제목 */
+.v8_80 {
+  font-family: 'Margarine', cursive;
+  font-size: 64px;
+  color: #5a5859;
+  margin-bottom: 50px;
+  z-index: 10;
+  position: relative;
+}
+
+/* 입력창 흰색 박스 */
+.v8_89 {
+  width: 85%;
+  max-width: 320px;
+  height: 70px;
+  background: #FFFFFF; /* 흰색 배경 */
+  border-radius: 15px;
+  
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  padding-right: 20px;
+  z-index: 10;
+  position: relative;
+  border: 1px solid #eee; /* 옅은 테두리 */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* 살짝 그림자 */
+}
+
+/* 'S -' 텍스트 */
+.v8_90 {
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  color: #000;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+/* 입력 태그 스타일 */
+input.v8_94 {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  color: #333;
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  height: 100%;
+}
+
+input.v8_94::placeholder {
+  color: #cccccc;
 }
