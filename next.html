@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>L.E.T-TER</title>
+    
+    <link href="https://fonts.googleapis.com/css?family=Battambang&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Margarine&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Alkalami&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Bitter&display=swap" rel="stylesheet" />
+
+    <style>
+        /* 초기화 */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        a { text-decoration: none; color: inherit; }
+
+        body {
+            background-color: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 480px;
+            background-color: #FFFFFF;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* ================== 배경 및 장식 ================== */
+        .bg-texture {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url("images/v8_77.png") center/cover no-repeat;
+            opacity: 1; z-index: 0;
+        }
+        .flower-top {
+            position: absolute; top: -20px; left: -30px; width: 160px; height: 200px;
+            background: url("images/v8_83.png") no-repeat left top; background-size: contain; z-index: 1;
+        }
+        .flower-right {
+            position: absolute; top: 45%; right: -10px; width: 150px; height: 250px;
+            background: url("images/v7_37.png") no-repeat right center; background-size: contain; z-index: 1;
+        }
+
+        /* ================== [화면 1] 닫힌 편지 상태 ================== */
+        .top-content-group {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20%;
+            transition: opacity 0.5s;
+            pointer-events: none; /* 그룹 자체는 클릭 통과 */
+        }
+
+        .date-text { font-family: 'Alkalami', serif; font-size: 1rem; color: #5a5859; margin-bottom: 2vh; letter-spacing: 3px; }
+        .sub-title { font-family: 'Margarine', cursive; font-size: 2.5rem; color: #E2DDDC; margin-bottom: -15px; z-index: 2; }
+        .main-title { font-family: 'Battambang', serif; font-size: 4rem; color: #5a5859; font-weight: normal; margin-bottom: 10px; z-index: 3; }
+        
+        /* 링크와 버튼: 클릭 가능하도록 설정 */
+        .memory-link { 
+            font-family: 'Roboto', sans-serif; font-size: 0.9rem; color: #858482; 
+            border-bottom: 1px solid #ccc; padding-bottom: 2px; margin-bottom: 5vh; cursor: pointer; transition: color 0.2s;
+            pointer-events: auto; /* 중요: 클릭 가능 */
+        }
+        .refill-btn { 
+            display: flex; align-items: center; justify-content: center; width: 260px; height: 55px; 
+            background-color: #EAEAEA; border-radius: 10px; cursor: pointer; text-decoration: none; transition: transform 0.1s;
+            pointer-events: auto; /* 중요: 클릭 가능 */
+        }
+        
+        .icon-clip { width: 24px; height: 24px; background: url("images/v7_56.png") no-repeat center/contain; margin-right: 10px; }
+        .btn-text { font-family: 'Bitter', serif; font-size: 1.4rem; color: #FFFFFF; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+
+        .envelope-closed {
+            position: absolute;
+            bottom: 5%; left: 5%; width: 90%; height: auto; aspect-ratio: 966/583;
+            z-index: 20; 
+            background: url("images/v7_31.png") no-repeat center bottom;
+            background-size: contain;
+            cursor: pointer;
+            transition: opacity 0.5s, transform 0.5s;
+            pointer-events: auto; /* 중요: 클릭 가능 */
+        }
+
+        /* 편지 열릴 때 숨김 처리용 클래스 */
+        .hidden { opacity: 0; pointer-events: none; }
+        .envelope-hidden { opacity: 0; transform: translateY(50px); pointer-events: none; }
+
+
+        /* ================== [닫기용 투명 배경] ================== */
+        .close-trigger-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 25; 
+            display: none; /* 평소엔 숨김 */
+            /* 배경색을 넣어서 테스트해볼 수 있음 (디버깅용), 실제론 투명 */
+            /* background: rgba(0,0,0,0.1); */
+        }
+
+
+        /* ================== [화면 2] 열린 편지 (수정됨) ================== */
+        .opened-letter-container {
+            position: absolute;
+            bottom: 2%; left: 0; 
+            width: 100%; 
+            height: 95%; 
+            z-index: 30;
+            
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 5%; 
+            
+            /* 핵심 수정: 평소에는 숨겨서 클릭 방해 금지 */
+            visibility: hidden; 
+            opacity: 0;
+            transform: translateY(50px);
+            
+            /* 전환 효과 (visibility는 딜레이 줘서 자연스럽게) */
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out, visibility 0s 0.8s;
+            
+            pointer-events: none; /* 컨테이너 자체 클릭 통과 */
+        }
+
+        /* 편지 이미지 */
+        .letter-img {
+            max-width: 100%;
+            max-height: 100%;
+            
+            /* 이미지만 클릭 감지 (닫히지 않게 하기 위함) */
+            pointer-events: auto; 
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.1));
+        }
+
+        /* 편지가 보일 때 적용되는 클래스 */
+        .show-letter {
+            visibility: visible; /* 보이게 설정 */
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out, visibility 0s 0s; /* 즉시 보이게 */
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="bg-texture"></div>
+        <div class="flower-top"></div>   
+        <div class="flower-right"></div> 
+
+        <div class="top-content-group" id="topGroup">
+            <div class="date-text">| 2025 12.28 |</div>
+            <div class="sub-title">For You</div>
+            <h1 class="main-title">L.E.T-TER</h1>
+            <a href="https://drive.google.com/drive/folders/1EFwIzIC2QTK6xIt9N6OzaoEiO4kYWzy_" target="_blank" class="memory-link">
+                Memories of the Donghae City →
+            </a>
+            <a href="https://www.bestpen.kr/shop/shopdetail.html?branduid=70050&search=%C1%A6%C6%AE%BD%BA%C6%AE%B8%B2&sort=viewcnt&xcode=173&mcode=003&scode=004&GfDT=aWh3UF8%3D" target="_blank" class="refill-btn">
+                <div class="icon-clip"></div>
+                <span class="btn-text">Refill Cartridge</span>
+            </a>
+        </div>
+
+        <div class="envelope-closed" id="closedEnvelope"></div>
+
+        <div class="close-trigger-overlay" id="closeOverlay"></div>
+
+        <div class="opened-letter-container" id="openedLetterContainer">
+            <img src="images/letter_open.png" class="letter-img" alt="letter">
+        </div>
+    </div>
+
+    <script>
+        const closedEnvelope = document.getElementById('closedEnvelope');
+        const topGroup = document.getElementById('topGroup');
+        const openedLetterContainer = document.getElementById('openedLetterContainer');
+        const closeOverlay = document.getElementById('closeOverlay');
+
+        // 1. 편지 열기
+        closedEnvelope.addEventListener('click', function() {
+            // 상단 내용과 봉투 숨김
+            topGroup.classList.add('hidden');
+            closedEnvelope.classList.add('envelope-hidden');
+            
+            // 닫기용 투명 배경 활성화
+            closeOverlay.style.display = 'block';
+
+            // 편지 나타내기
+            setTimeout(() => {
+                openedLetterContainer.classList.add('show-letter');
+            }, 100); // 딜레이 살짝 줄임
+        });
+
+        // 2. 편지 닫기 (투명 배경 클릭 시)
+        closeOverlay.addEventListener('click', function() {
+            // 편지 숨김
+            openedLetterContainer.classList.remove('show-letter');
+            
+            // 투명 배경 비활성화
+            closeOverlay.style.display = 'none';
+
+            // 기존 화면 복구 (애니메이션 시간 고려)
+            setTimeout(() => {
+                topGroup.classList.remove('hidden');
+                closedEnvelope.classList.remove('envelope-hidden');
+            }, 600);
+        });
+    </script>
+
+</body>
+</html>
